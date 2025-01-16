@@ -24,7 +24,7 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USERNAME: ${{ secrets.EC2_USERNAME }}
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@$EC2_HOST << 'EOF'
+          ssh -o StrictHostKeyChecking=no ec2-user@34.220.178.10 << 'EOF'
             if [ ! -d "/home/ec2-user/node-CI-CD" ]; then
               cd /home/ec2-user/node-CI-CD
               git clone https://github.com/niravlathiya04/node-CI-CD.git.
