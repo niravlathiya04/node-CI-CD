@@ -25,15 +25,15 @@ jobs:
           USERNAME: ${{ secrets.EC2_USERNAME }}
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@$EC2_HOST << 'EOF'
-            if [ ! -d "/home/ec2-user/node-app" ]; then
-              cd /home/ec2-user/node-app
+            if [ ! -d "/home/ec2-user/node-CI-CD" ]; then
+              cd /home/ec2-user/node-CI-CD
               git clone https://github.com/niravlathiya04/node-CI-CD.git.
             else
-              cd /home/ec2-user/node-app
+              cd /home/ec2-user/node-CI-CD
               git reset --hard
               git pull origin main
             fi
             npm install
-            pm2 start src/app.js --name node-app || pm2 restart node-app
+            pm2 start src/app.js --name node-CI-CD || pm2 restart node-CI-CD
             pm2 save
           EOF
