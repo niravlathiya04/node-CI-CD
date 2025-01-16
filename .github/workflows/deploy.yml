@@ -40,11 +40,12 @@ jobs:
               git pull origin main
             fi
             npm install
+            sudo npm install -g ts-node
             if ! command -v pm2 &> /dev/null; then
               echo "PM2 not found, installing..."
               sudo npm install -g pm2
             fi
-
+          
             # Start or restart the application with PM2
             pm2 start src/app.js --name node-app || pm2 restart node-app
             pm2 save
