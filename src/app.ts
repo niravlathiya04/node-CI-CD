@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express, { Application } from 'express';
+import router from './routes/index';
 
 // Load environment variables
 dotenv.config({ path: `./config/${process.env.NODE_ENV}.env` });
@@ -11,7 +12,7 @@ const port: number = parseInt(process.env.PORT || '3000', 10);
 app.use(express.json());
 
 // Routes
-app.use('/api', require('./routes/index'));
+app.use('/api', router);
 
 // Start server
 app.listen(port, () => {
