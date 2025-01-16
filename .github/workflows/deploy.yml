@@ -1,76 +1,40 @@
-name: Node.js CI/CD Pipeline
+name: Deploy to AWS EC2
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build-and-test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # Run tests
-      - name: Run tests
-        run: npm test
-
-      # Build the application (if applicable)
-      - name: Build application
-        run: npm run build
-
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-      # Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Set up SSH
-      - name: Configure SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-
-      # Deploy to EC2
-      - name: Deploy to EC2
+      - name: Deploy CI/CD Demo AWS EC2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USERNAME: ${{ secrets.EC2_USERNAME }}
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << EOF
-          # Navigate to the application directory
-          mkdir -p /home/ec2-user/node-app
-          cd /home/ec2-user/node-app
-          
-          # Pull the latest changes from the repository
-          if [ -d ".git" ]; then
-            git reset --hard
-            git pull origin main
-          else
-            git clone https://github.com/niravlathiya04/node-CI-CD.git.
-          fi
-          
-          # Install dependencies and build the application
-          npm install
-          npm run build
-          
-          # Restart the application using PM2
-          pm2 start app.js --name node-app || pm2 restart node-app
-          pm2 save
+          ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$HOST << 'EOF'
+            if [ ! -d "/home/$EC2_USERNAME/node-app" ]; then
+              mkdir -p /home/$EC2_USERNAME/node-app
+              cd /home/$EC2_USERNAME/node-app
+              git clone https://github.com/niravlathiya04/node-CI-CD.git.
+            else
+              cd /home/$EC2_USERNAME/node-app
+              git reset --hard
+              git pull origin main
+            fi
+            npm install
+            pm2 start src/app.js --name node-app || pm2 restart node-app
+            pm2 save
           EOF
