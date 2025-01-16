@@ -15,6 +15,6 @@ app.use(express.json());
 app.use('/api', router);
 
 // Start server
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`);
 });
