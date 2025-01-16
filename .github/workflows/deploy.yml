@@ -1,0 +1,52 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          
+      - name: Verify SSH Agent Setup
+        run: ssh-add -L    
+        
+      - name: Deploy CI/CD Demo AWS EC2
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          USERNAME: ${{ secrets.EC2_USERNAME }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@34.220.178.10 << 'EOF'
+            if [ ! -d "/home/ec2-user/node-CI-CD" ]; then
+              cd /home/ec2-user/node-CI-CD
+              git clone https://github.com/niravlathiya04/node-CI-CD.git.
+            else
+              cd /home/ec2-user/node-CI-CD
+              git reset --hard
+              git pull origin main
+            fi
+            npm install
+            sudo npm install -g ts-node
+            if ! command -v pm2 &> /dev/null; then
+              echo "PM2 not found, installing..."
+              sudo npm install -g pm2
+            fi
+          
+            # Start or restart the application with PM2
+            pm2 start src/app.js --name node-app || pm2 restart node-app
+            pm2 save
+          EOF
