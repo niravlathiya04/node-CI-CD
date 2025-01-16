@@ -17,10 +17,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          
+      - name: Verify SSH Agent Setup
+        run: ssh-add -L    
+        
       - name: Deploy CI/CD Demo AWS EC2
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
           USERNAME: ${{ secrets.EC2_USERNAME }}
         run: |
