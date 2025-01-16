@@ -54,9 +54,23 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << EOF
-          cd /path/to/your/app
-          git pull origin main
+          # Navigate to the application directory
+          mkdir -p /home/ec2-user/node-app
+          cd /home/ec2-user/node-app
+          
+          # Pull the latest changes from the repository
+          if [ -d ".git" ]; then
+            git reset --hard
+            git pull origin main
+          else
+            git clone https://github.com/niravlathiya04/node-CI-CD.git.
+          fi
+          
+          # Install dependencies and build the application
           npm install
           npm run build
-          pm2 restart all
+          
+          # Restart the application using PM2
+          pm2 start app.js --name node-app || pm2 restart node-app
+          pm2 save
           EOF
