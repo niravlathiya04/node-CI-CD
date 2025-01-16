@@ -24,13 +24,12 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USERNAME: ${{ secrets.EC2_USERNAME }}
         run: |
-          ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$HOST << 'EOF'
-            if [ ! -d "/home/$EC2_USERNAME/node-app" ]; then
-              mkdir -p /home/$EC2_USERNAME/node-app
-              cd /home/$EC2_USERNAME/node-app
+          ssh -o StrictHostKeyChecking=no ec2-user@$EC2_HOST << 'EOF'
+            if [ ! -d "/home/ec2-user/node-app" ]; then
+              cd /home/ec2-user/node-app
               git clone https://github.com/niravlathiya04/node-CI-CD.git.
             else
-              cd /home/$EC2_USERNAME/node-app
+              cd /home/ec2-user/node-app
               git reset --hard
               git pull origin main
             fi
