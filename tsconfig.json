@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     /* Language and Environment */
-    "target": "es2020",
-    "module": "ESNext", /* Changed to ESNext for ES module support */
+    "target": "es2016",
+    "module": "CommonJS", /* Changed to ESNext for ES module support */
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
