@@ -17,5 +17,6 @@ app.use('/api', router);
 // Start server
 app.listen(port, '0.0.0.0', () => {
   console.log("This is my first project of Node CI/CD demo");
+  console.log(JSON.stringify({ level: "info", message: "Server started successfully" }));
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`);
 });
