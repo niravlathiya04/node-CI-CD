@@ -1,8 +1,7 @@
-// import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import express, { Application } from 'express';
 import router from './routes/index';
 
-const dotenv = require('dotenv');
 // Load environment variables
 dotenv.config({ path: `./config/${process.env.NODE_ENV}.env` });
 
@@ -17,6 +16,5 @@ app.use('/api', router);
 
 // Start server
 app.listen(port, '0.0.0.0', () => {
-
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`);
 });
