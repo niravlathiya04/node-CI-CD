@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
+dotenv.config();
 import express, { Application } from 'express';
 import router from './routes/index';
 
 // Load environment variables
-dotenv.config({ path: `./config/${process.env.NODE_ENV}.env` });
 
 const app: Application = express();
 const port: number = parseInt(process.env.PORT || '3000', 10);
